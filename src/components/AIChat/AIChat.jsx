@@ -26,6 +26,7 @@ const AIChat = () => {
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null);
     const openAIServiceRef = useRef(null);
+    const conversationSelectorRef = useRef(null);
 
     const { config, isConfigured } = useAIConfig();
     const {
@@ -59,6 +60,22 @@ const AIChat = () => {
     useEffect(() => {
         scrollToBottom();
     }, [currentConversation?.messages]);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (conversationSelectorRef.current &&
+                !conversationSelectorRef.current.contains(event.target) &&
+                showConversations) {
+                setShowConversations(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showConversations]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -175,7 +192,7 @@ const AIChat = () => {
         <div className={styles.chatContainer}>
             {/* Conversation Selector */}
             <div className={styles.conversationHeader}>
-                <div className={styles.conversationSelector}>
+                <div className={styles.conversationSelector} ref={conversationSelectorRef}>
                     <button
                         onClick={() => setShowConversations(!showConversations)}
                         className={styles.conversationButton}
@@ -190,7 +207,7 @@ const AIChat = () => {
                         <div className={styles.conversationDropdown}>
                             <div className={styles.conversationList}>
                                 {conversations.map(conv => (
-                                    <button
+                                    <div
                                         key={conv.id}
                                         onClick={() => {
                                             switchConversation(conv.id);
@@ -216,7 +233,7 @@ const AIChat = () => {
                                                 <Trash2 size={12} />
                                             </button>
                                         )}
-                                    </button>
+                                    </div>
                                 ))}
                             </div>
                         </div>
