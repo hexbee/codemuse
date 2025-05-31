@@ -1,0 +1,12 @@
+.app {
+    display: flex;
+    height: 100vh;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    .app {
+        flex-direction: column;
+    }
+}
