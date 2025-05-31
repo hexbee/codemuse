@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 const generateId = () =>
     Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -33,14 +33,54 @@ export const useConversations = () => {
                     );
                 }
             } else {
-                // Create initial conversation
-                createNewConversation();
+                // Create initial conversation directly
+                const initialConversation = {
+                    id: generateId(),
+                    title: 'New Conversation',
+                    messages: [
+                        {
+                            id: generateId(),
+                            type: 'ai',
+                            content:
+                                "Hello! I'm your AI assistant. I can help you with HTML editing, formatting, and content generation. How can I assist you today?",
+                            timestamp: new Date().toISOString(),
+                        },
+                    ],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                };
+
+                setConversations([initialConversation]);
+                setCurrentConversationId(initialConversation.id);
+                saveConversations(
+                    [initialConversation],
+                    initialConversation.id
+                );
             }
         } catch (error) {
             console.error('Failed to load conversations:', error);
-            createNewConversation();
+            // Create initial conversation directly on error
+            const initialConversation = {
+                id: generateId(),
+                title: 'New Conversation',
+                messages: [
+                    {
+                        id: generateId(),
+                        type: 'ai',
+                        content:
+                            "Hello! I'm your AI assistant. I can help you with HTML editing, formatting, and content generation. How can I assist you today?",
+                        timestamp: new Date().toISOString(),
+                    },
+                ],
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            };
+
+            setConversations([initialConversation]);
+            setCurrentConversationId(initialConversation.id);
+            saveConversations([initialConversation], initialConversation.id);
         }
-    }, [createNewConversation]);
+    }, []);
 
     // Save conversations to localStorage
     const saveConversations = (newConversations, newCurrentId = null) => {
@@ -58,7 +98,7 @@ export const useConversations = () => {
     };
 
     // Check if conversation is effectively empty (only has initial AI message)
-    const isConversationEmpty = useCallback(conversation => {
+    const isConversationEmpty = conversation => {
         if (!conversation || !conversation.messages) return true;
 
         // Consider empty if only has 1 message and it's the initial AI greeting
@@ -71,10 +111,10 @@ export const useConversations = () => {
         }
 
         return conversation.messages.length === 0;
-    }, []);
+    };
 
     // Smart create new conversation - reuse empty conversation if available
-    const createNewConversation = useCallback(() => {
+    const createNewConversation = () => {
         const currentConv = getCurrentConversation();
 
         // If current conversation is empty, just reuse it
@@ -104,12 +144,12 @@ export const useConversations = () => {
         saveConversations(newConversations, newConversation.id);
 
         return newConversation.id;
-    }, [conversations, getCurrentConversation, isConversationEmpty]);
+    };
 
     // Get current conversation
-    const getCurrentConversation = useCallback(() => {
+    const getCurrentConversation = () => {
         return conversations.find(c => c.id === currentConversationId) || null;
-    }, [conversations, currentConversationId]);
+    };
 
     // Add message to current conversation
     const addMessage = message => {
