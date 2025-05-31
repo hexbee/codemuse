@@ -3,12 +3,12 @@ import {
     Send,
     Bot,
     User,
-    Plus,
     Trash2,
     ChevronDown,
     Loader2,
     AlertCircle,
-    RefreshCw
+    RefreshCw,
+    Edit3
 } from 'lucide-react';
 import { useAIConfig } from '../../hooks/useAIConfig';
 import { useConversations } from '../../hooks/useConversations';
@@ -187,29 +187,6 @@ const AIChat = () => {
 
                     {showConversations && (
                         <div className={styles.conversationDropdown}>
-                            <div className={styles.conversationActions}>
-                                <button
-                                    onClick={() => {
-                                        createNewConversation();
-                                        setShowConversations(false);
-                                    }}
-                                    className={styles.actionButton}
-                                >
-                                    <Plus size={14} />
-                                    New Conversation
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        clearAllConversations();
-                                        setShowConversations(false);
-                                    }}
-                                    className={styles.actionButton}
-                                >
-                                    <Trash2 size={14} />
-                                    Clear All
-                                </button>
-                            </div>
-
                             <div className={styles.conversationList}>
                                 {conversations.map(conv => (
                                     <button
@@ -244,6 +221,18 @@ const AIChat = () => {
                         </div>
                     )}
                 </div>
+
+                {/* New Conversation Button */}
+                <button
+                    onClick={() => {
+                        createNewConversation();
+                        setShowConversations(false);
+                    }}
+                    className={styles.newConversationButton}
+                    title="New Conversation"
+                >
+                    <Edit3 size={24} />
+                </button>
             </div>
 
             {/* Messages */}
