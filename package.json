@@ -1,8 +1,17 @@
 {
     "name": "codemuse",
     "private": true,
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
+    "description": "A modern HTML editor with live preview and AI assistance for web development",
+    "keywords": [
+        "html-editor",
+        "code-editor",
+        "live-preview",
+        "web-development",
+        "ai-assistant"
+    ],
+    "author": "CodeMuse Team",
     "scripts": {
         "dev": "vite",
         "build": "vite build",
