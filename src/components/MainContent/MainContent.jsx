@@ -34,48 +34,52 @@ const MainContent = ({ htmlCode, onHtmlChange, theme, onToggleTheme }) => {
     return (
         <div className={styles.mainContent}>
             <div className={styles.header}>
-                <div className={styles.tabs}>
-                    <button
-                        className={`${styles.tab} ${activeTab === 'edit' ? styles.active : ''}`}
-                        onClick={() => setActiveTab('edit')}
-                    >
-                        <Edit3 size={16} />
-                        Edit
-                    </button>
-                    <button
-                        className={`${styles.tab} ${activeTab === 'preview' ? styles.active : ''}`}
-                        onClick={() => setActiveTab('preview')}
-                    >
-                        <Eye size={16} />
-                        Preview
-                    </button>
+                <div className={styles.topSection}>
+                    <div className={styles.actions}>
+                        <button
+                            onClick={handleCopy}
+                            className={styles.actionButton}
+                            title="Copy HTML to clipboard"
+                        >
+                            <Copy size={14} />
+                            Copy
+                        </button>
+                        <button
+                            onClick={handleDownload}
+                            className={styles.actionButton}
+                            title="Download HTML file"
+                        >
+                            <Download size={14} />
+                            Download
+                        </button>
+                        <button
+                            onClick={() => setShowSettings(!showSettings)}
+                            className={`${styles.actionButton} ${showSettings ? styles.active : ''}`}
+                            title="Settings"
+                        >
+                            <Settings size={14} />
+                            Settings
+                        </button>
+                    </div>
                 </div>
 
-                <div className={styles.actions}>
-                    <button
-                        onClick={handleCopy}
-                        className={styles.actionButton}
-                        title="Copy HTML to clipboard"
-                    >
-                        <Copy size={16} />
-                        Copy
-                    </button>
-                    <button
-                        onClick={handleDownload}
-                        className={styles.actionButton}
-                        title="Download HTML file"
-                    >
-                        <Download size={16} />
-                        Download
-                    </button>
-                    <button
-                        onClick={() => setShowSettings(!showSettings)}
-                        className={`${styles.actionButton} ${showSettings ? styles.active : ''}`}
-                        title="Settings"
-                    >
-                        <Settings size={16} />
-                        Settings
-                    </button>
+                <div className={styles.tabSection}>
+                    <div className={styles.tabs}>
+                        <button
+                            className={`${styles.tab} ${activeTab === 'edit' ? styles.active : ''}`}
+                            onClick={() => setActiveTab('edit')}
+                        >
+                            <Edit3 size={14} />
+                            Edit
+                        </button>
+                        <button
+                            className={`${styles.tab} ${activeTab === 'preview' ? styles.active : ''}`}
+                            onClick={() => setActiveTab('preview')}
+                        >
+                            <Eye size={14} />
+                            Preview
+                        </button>
+                    </div>
                 </div>
             </div>
 
