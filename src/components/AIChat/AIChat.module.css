@@ -279,6 +279,25 @@
     color: var(--text-primary);
 }
 
+.messageContentWrapper {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    max-width: 80%;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    word-wrap: break-word;
+    position: relative;
+}
+
+.message.user .messageContentWrapper {
+    background-color: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
+}
+
+/* Legacy support for messageContent */
 .messageContent {
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);

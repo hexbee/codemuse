@@ -65,6 +65,29 @@ function App() {
 
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+    // 处理从AI聊天导入代码到编辑器
+    const handleImportCode = (code, language) => {
+        if (language === 'html' || language === 'xml') {
+            setHtmlCode(code);
+        } else {
+            // 对于其他类型的代码，可以包装在HTML中
+            const wrappedCode = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imported Code</title>
+    ${language === 'css' ? `<style>\n${code}\n</style>` : ''}
+    ${language === 'javascript' || language === 'js' ? `<script>\n${code}\n</script>` : ''}
+</head>
+<body>
+    ${language === 'css' || language === 'javascript' || language === 'js' ? '<h1>Code imported successfully!</h1>' : code}
+</body>
+</html>`;
+            setHtmlCode(wrappedCode);
+        }
+    };
+
     return (
         <div className={styles.app}>
             <Sidebar
@@ -74,6 +97,7 @@ function App() {
                 }
                 theme={theme}
                 onToggleTheme={toggleTheme}
+                onImportCode={handleImportCode}
             />
             <MainContent
                 htmlCode={htmlCode}

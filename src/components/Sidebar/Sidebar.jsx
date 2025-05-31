@@ -8,7 +8,13 @@ import {
 import AIChat from '../AIChat/AIChat';
 import styles from './Sidebar.module.css';
 
-const Sidebar = ({ isCollapsed, onToggleCollapse, theme, onToggleTheme }) => {
+const Sidebar = ({
+    isCollapsed,
+    onToggleCollapse,
+    theme,
+    onToggleTheme,
+    onImportCode,
+}) => {
     return (
         <div
             className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}
@@ -52,7 +58,7 @@ const Sidebar = ({ isCollapsed, onToggleCollapse, theme, onToggleTheme }) => {
                 </div>
             </div>
 
-            {!isCollapsed && <AIChat />}
+            {!isCollapsed && <AIChat onImportCode={onImportCode} />}
         </div>
     );
 };

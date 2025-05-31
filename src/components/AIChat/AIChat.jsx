@@ -14,9 +14,10 @@ import { useAIConfig } from '../../hooks/useAIConfig';
 import { useConversations } from '../../hooks/useConversations';
 import OpenAIService from '../../services/openaiService';
 import { debugAI } from '../../utils/debugHelper';
+import MessageContent from '../MessageContent/MessageContent';
 import styles from './AIChat.module.css';
 
-const AIChat = () => {
+const AIChat = ({ onImportCode }) => {
     const [inputMessage, setInputMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -294,8 +295,12 @@ const AIChat = () => {
                                     <User size={16} />
                                 )}
                             </div>
-                            <div className={styles.messageContent}>
-                                {message.content}
+                            <div className={styles.messageContentWrapper}>
+                                <MessageContent
+                                    content={message.content}
+                                    onImportCode={onImportCode}
+                                    isStreaming={message.isStreaming}
+                                />
                                 {message.isStreaming && (
                                     <Loader2
                                         size={14}
@@ -331,7 +336,7 @@ const AIChat = () => {
                         ref={textareaRef}
                         value={inputMessage}
                         onChange={e => setInputMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
+                        onKeyDown={handleKeyPress}
                         placeholder="Ask me anything about HTML..."
                         className={styles.messageInput}
                         rows={1}
