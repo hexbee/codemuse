@@ -1,5 +1,17 @@
 import { useState } from 'react';
-import { X, Sun, Moon, Type, Palette, Bot, Eye, EyeOff, Check, AlertCircle, Wifi } from 'lucide-react';
+import {
+    X,
+    Sun,
+    Moon,
+    Type,
+    Palette,
+    Bot,
+    Eye,
+    EyeOff,
+    Check,
+    AlertCircle,
+    Wifi,
+} from 'lucide-react';
 import { useAIConfig } from '../../hooks/useAIConfig';
 import OpenAIService from '../../services/openaiService';
 import styles from './Settings.module.css';
@@ -15,7 +27,8 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
     const [isTesting, setIsTesting] = useState(false);
     const [testResult, setTestResult] = useState(null);
 
-    const { config, updateConfig, validateConfig, supportedModels } = useAIConfig();
+    const { config, updateConfig, validateConfig, supportedModels } =
+        useAIConfig();
 
     const fontFamilies = [
         { value: 'Consolas', label: 'Consolas' },
@@ -23,16 +36,16 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
         { value: 'Menlo', label: 'Menlo' },
         { value: 'Courier New', label: 'Courier New' },
         { value: 'Source Code Pro', label: 'Source Code Pro' },
-        { value: 'Fira Code', label: 'Fira Code' }
+        { value: 'Fira Code', label: 'Fira Code' },
     ];
 
-    const handleFontSizeChange = (e) => {
+    const handleFontSizeChange = e => {
         const newSize = parseInt(e.target.value);
         setFontSize(newSize);
         // You could emit this to parent component to update editor settings
     };
 
-    const handleFontFamilyChange = (e) => {
+    const handleFontFamilyChange = e => {
         setFontFamily(e.target.value);
         // You could emit this to parent component to update editor settings
     };
@@ -78,8 +91,10 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
         }
     };
 
-    const getCurrentConfigValue = (field) => {
-        return tempConfig[field] !== undefined ? tempConfig[field] : config[field];
+    const getCurrentConfigValue = field => {
+        return tempConfig[field] !== undefined
+            ? tempConfig[field]
+            : config[field];
     };
 
     const handleTestConnection = async () => {
@@ -93,7 +108,7 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
             if (!validation.isValid) {
                 setTestResult({
                     success: false,
-                    message: 'Please fix configuration errors before testing'
+                    message: 'Please fix configuration errors before testing',
                 });
                 setIsTesting(false);
                 return;
@@ -106,13 +121,12 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                 success: result.success,
                 message: result.success
                     ? 'Connection successful! API is working correctly.'
-                    : `Connection failed: ${result.error}`
+                    : `Connection failed: ${result.error}`,
             });
-
         } catch (error) {
             setTestResult({
                 success: false,
-                message: `Test failed: ${error.message}`
+                message: `Test failed: ${error.message}`,
             });
         } finally {
             setIsTesting(false);
@@ -142,7 +156,11 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                                 onClick={onToggleTheme}
                                 className={styles.themeToggle}
                             >
-                                {theme === 'light' ? <Sun size={16} /> : <Moon size={16} />}
+                                {theme === 'light' ? (
+                                    <Sun size={16} />
+                                ) : (
+                                    <Moon size={16} />
+                                )}
                                 {theme === 'light' ? 'Light' : 'Dark'}
                             </button>
                         </div>
@@ -159,9 +177,14 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                             <div className={styles.inputGroup}>
                                 <input
                                     id="apiKey"
-                                    type={showApiKey ? "text" : "password"}
+                                    type={showApiKey ? 'text' : 'password'}
                                     value={getCurrentConfigValue('apiKey')}
-                                    onChange={(e) => handleConfigChange('apiKey', e.target.value)}
+                                    onChange={e =>
+                                        handleConfigChange(
+                                            'apiKey',
+                                            e.target.value
+                                        )
+                                    }
                                     placeholder="Enter your OpenAI API key"
                                     className={`${styles.input} ${configErrors.apiKey ? styles.inputError : ''}`}
                                 />
@@ -169,9 +192,17 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                                     type="button"
                                     onClick={() => setShowApiKey(!showApiKey)}
                                     className={styles.toggleButton}
-                                    title={showApiKey ? "Hide API key" : "Show API key"}
+                                    title={
+                                        showApiKey
+                                            ? 'Hide API key'
+                                            : 'Show API key'
+                                    }
                                 >
-                                    {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    {showApiKey ? (
+                                        <EyeOff size={16} />
+                                    ) : (
+                                        <Eye size={16} />
+                                    )}
                                 </button>
                             </div>
                             {configErrors.apiKey && (
@@ -188,7 +219,12 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                                 id="baseUrl"
                                 type="text"
                                 value={getCurrentConfigValue('baseUrl')}
-                                onChange={(e) => handleConfigChange('baseUrl', e.target.value)}
+                                onChange={e =>
+                                    handleConfigChange(
+                                        'baseUrl',
+                                        e.target.value
+                                    )
+                                }
                                 placeholder="https://api.openai.com/v1"
                                 className={`${styles.input} ${configErrors.baseUrl ? styles.inputError : ''}`}
                             />
@@ -205,11 +241,16 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                             <select
                                 id="model"
                                 value={getCurrentConfigValue('model')}
-                                onChange={(e) => handleConfigChange('model', e.target.value)}
+                                onChange={e =>
+                                    handleConfigChange('model', e.target.value)
+                                }
                                 className={`${styles.select} ${configErrors.model ? styles.inputError : ''}`}
                             >
                                 {supportedModels.map(model => (
-                                    <option key={model.value} value={model.value}>
+                                    <option
+                                        key={model.value}
+                                        value={model.value}
+                                    >
                                         {model.label}
                                     </option>
                                 ))}
@@ -240,7 +281,10 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                                 </button>
                                 <button
                                     onClick={handleSaveAIConfig}
-                                    disabled={isSaving || Object.keys(tempConfig).length === 0}
+                                    disabled={
+                                        isSaving ||
+                                        Object.keys(tempConfig).length === 0
+                                    }
                                     className={`${styles.saveButton} ${saveSuccess ? styles.saveSuccess : ''}`}
                                 >
                                     {isSaving ? (
@@ -256,8 +300,14 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                                 </button>
                             </div>
                             {testResult && (
-                                <div className={`${styles.testResult} ${testResult.success ? styles.testSuccess : styles.testError}`}>
-                                    {testResult.success ? <Check size={14} /> : <AlertCircle size={14} />}
+                                <div
+                                    className={`${styles.testResult} ${testResult.success ? styles.testSuccess : styles.testError}`}
+                                >
+                                    {testResult.success ? (
+                                        <Check size={14} />
+                                    ) : (
+                                        <AlertCircle size={14} />
+                                    )}
                                     {testResult.message}
                                 </div>
                             )}
@@ -282,7 +332,9 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                                     onChange={handleFontSizeChange}
                                     className={styles.slider}
                                 />
-                                <span className={styles.value}>{fontSize}px</span>
+                                <span className={styles.value}>
+                                    {fontSize}px
+                                </span>
                             </div>
                         </div>
 
@@ -309,8 +361,13 @@ const SettingsPanel = ({ theme, onToggleTheme, onClose }) => {
                         </div>
 
                         <div className={styles.about}>
-                            <p><strong>CodeMuse</strong></p>
-                            <p>A modern HTML editor with live preview and AI assistance.</p>
+                            <p>
+                                <strong>CodeMuse</strong>
+                            </p>
+                            <p>
+                                A modern HTML editor with live preview and AI
+                                assistance.
+                            </p>
                             <p>Version 1.0.0</p>
                         </div>
                     </div>

@@ -7,7 +7,12 @@ class OpenAIService {
         this.config = { ...this.config, ...newConfig };
     }
 
-    async sendMessage(messages, onChunk = null, onComplete = null, onError = null) {
+    async sendMessage(
+        messages,
+        onChunk = null,
+        onComplete = null,
+        onError = null
+    ) {
         try {
             console.log('OpenAI Service - Starting request');
             console.log('Config:', {
@@ -15,7 +20,7 @@ class OpenAIService {
                 model: this.config.model,
                 hasApiKey: !!this.config.apiKey,
                 maxTokens: this.config.maxTokens,
-                temperature: this.config.temperature
+                temperature: this.config.temperature,
             });
 
             if (!this.config.apiKey) {
@@ -24,7 +29,7 @@ class OpenAIService {
 
             const apiMessages = messages.map(msg => ({
                 role: msg.type === 'user' ? 'user' : 'assistant',
-                content: msg.content
+                content: msg.content,
             }));
 
             console.log('API Messages:', apiMessages);
@@ -34,26 +39,35 @@ class OpenAIService {
                 messages: apiMessages,
                 max_tokens: this.config.maxTokens,
                 temperature: this.config.temperature,
-                stream: true
+                stream: true,
             };
 
             console.log('Request body:', requestBody);
 
-            const response = await fetch(`${this.config.baseUrl}/chat/completions`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.config.apiKey}`
-                },
-                body: JSON.stringify(requestBody)
-            });
+            const response = await fetch(
+                `${this.config.baseUrl}/chat/completions`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${this.config.apiKey}`,
+                    },
+                    body: JSON.stringify(requestBody),
+                }
+            );
 
             console.log('Response status:', response.status);
-            console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+            console.log(
+                'Response headers:',
+                Object.fromEntries(response.headers.entries())
+            );
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(
+                    errorData.error?.message ||
+                        `HTTP ${response.status}: ${response.statusText}`
+                );
             }
 
             const reader = response.body.getReader();
@@ -80,13 +94,14 @@ class OpenAIService {
 
                             try {
                                 const parsed = JSON.parse(data);
-                                const content = parsed.choices?.[0]?.delta?.content;
+                                const content =
+                                    parsed.choices?.[0]?.delta?.content;
 
                                 if (content) {
                                     fullContent += content;
                                     if (onChunk) onChunk(content, fullContent);
                                 }
-                            } catch (parseError) {
+                            } catch {
                                 // Ignore parsing errors for incomplete chunks
                                 continue;
                             }
@@ -99,7 +114,6 @@ class OpenAIService {
 
             if (onComplete) onComplete(fullContent);
             return fullContent;
-
         } catch (error) {
             console.error('OpenAI API Error:', error);
             if (onError) onError(error);
@@ -112,24 +126,27 @@ class OpenAIService {
             const response = await fetch(`${this.config.baseUrl}/models`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${this.config.apiKey}`
-                }
+                    Authorization: `Bearer ${this.config.apiKey}`,
+                },
             });
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(
+                    errorData.error?.message ||
+                        `HTTP ${response.status}: ${response.statusText}`
+                );
             }
 
             const data = await response.json();
             return {
                 success: true,
-                models: data.data || []
+                models: data.data || [],
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -138,7 +155,7 @@ class OpenAIService {
     formatMessagesForAPI(messages) {
         return messages.map(msg => ({
             role: msg.type === 'user' ? 'user' : 'assistant',
-            content: msg.content
+            content: msg.content,
         }));
     }
 

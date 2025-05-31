@@ -9,7 +9,7 @@ const Preview = ({ htmlCode }) => {
         if (iframeRef.current) {
             const iframe = iframeRef.current;
             const doc = iframe.contentDocument || iframe.contentWindow.document;
-            
+
             // Write the HTML content to the iframe
             doc.open();
             doc.write(htmlCode);
@@ -42,7 +42,7 @@ const Preview = ({ htmlCode }) => {
                     Refresh
                 </button>
             </div>
-            
+
             <div className={styles.previewContent}>
                 <iframe
                     ref={iframeRef}

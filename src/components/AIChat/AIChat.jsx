@@ -8,7 +8,7 @@ import {
     Loader2,
     AlertCircle,
     RefreshCw,
-    Plus
+    Plus,
 } from 'lucide-react';
 import { useAIConfig } from '../../hooks/useAIConfig';
 import { useConversations } from '../../hooks/useConversations';
@@ -21,7 +21,6 @@ const AIChat = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showConversations, setShowConversations] = useState(false);
-    const [streamingMessageId, setStreamingMessageId] = useState(null);
 
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null);
@@ -39,8 +38,7 @@ const AIChat = () => {
         updateMessage,
         switchConversation,
         deleteConversation,
-        clearAllConversations,
-        isConversationEmpty
+        isConversationEmpty,
     } = useConversations();
 
     // Initialize OpenAI service when config changes
@@ -49,7 +47,7 @@ const AIChat = () => {
             console.log('Initializing OpenAI service with config:', {
                 baseUrl: config.baseUrl,
                 model: config.model,
-                hasApiKey: !!config.apiKey
+                hasApiKey: !!config.apiKey,
             });
             debugAI.checkConfig(config);
             openAIServiceRef.current = new OpenAIService(config);
@@ -63,10 +61,12 @@ const AIChat = () => {
 
     // Close dropdown when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (conversationSelectorRef.current &&
+        const handleClickOutside = event => {
+            if (
+                conversationSelectorRef.current &&
                 !conversationSelectorRef.current.contains(event.target) &&
-                showConversations) {
+                showConversations
+            ) {
                 setShowConversations(false);
             }
         };
@@ -90,30 +90,26 @@ const AIChat = () => {
         setIsLoading(true);
 
         try {
-
-
             // Add user message
             const addedUserMessage = addMessage({
                 type: 'user',
-                content: userMessage
+                content: userMessage,
             });
 
             // Get conversation history for API (including the just-added user message)
             const currentConv = getCurrentConversation();
             // Include the user message we just added by manually adding it to the messages
             const allMessages = [...currentConv.messages, addedUserMessage];
-            const messagesToSend = allMessages.filter(msg => !msg.isStreaming && msg.content.trim() !== '');
-
-
+            const messagesToSend = allMessages.filter(
+                msg => !msg.isStreaming && msg.content.trim() !== ''
+            );
 
             // Add placeholder AI message
             const aiMessage = addMessage({
                 type: 'ai',
                 content: '',
-                isStreaming: true
+                isStreaming: true,
             });
-
-            setStreamingMessageId(aiMessage.id);
 
             // Ensure we have the OpenAI service
             if (!openAIServiceRef.current) {
@@ -124,44 +120,43 @@ const AIChat = () => {
             await openAIServiceRef.current.sendMessage(
                 messagesToSend,
                 // onChunk
-                (chunk, fullContent) => {
+                (_chunk, fullContent) => {
                     updateMessage(aiMessage.id, {
                         content: fullContent,
-                        isStreaming: true
+                        isStreaming: true,
                     });
                 },
                 // onComplete
-                (fullContent) => {
+                fullContent => {
                     updateMessage(aiMessage.id, {
                         content: fullContent,
-                        isStreaming: false
+                        isStreaming: false,
                     });
-                    setStreamingMessageId(null);
+
                     setIsLoading(false);
                 },
                 // onError
-                (error) => {
+                error => {
                     console.error('OpenAI API Error:', error);
                     setError(error.message);
                     updateMessage(aiMessage.id, {
-                        content: 'Sorry, I encountered an error while processing your request.',
+                        content:
+                            'Sorry, I encountered an error while processing your request.',
                         isStreaming: false,
-                        hasError: true
+                        hasError: true,
                     });
-                    setStreamingMessageId(null);
+
                     setIsLoading(false);
                 }
             );
-
         } catch (error) {
             console.error('Error sending message:', error);
             setError(error.message);
             setIsLoading(false);
-            setStreamingMessageId(null);
         }
     };
 
-    const handleKeyPress = (e) => {
+    const handleKeyPress = e => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSendMessage();
@@ -172,7 +167,9 @@ const AIChat = () => {
         setError(null);
         // Re-send the last user message
         const currentConv = getCurrentConversation();
-        const lastUserMessage = [...currentConv.messages].reverse().find(msg => msg.type === 'user');
+        const lastUserMessage = [...currentConv.messages]
+            .reverse()
+            .find(msg => msg.type === 'user');
         if (lastUserMessage) {
             setInputMessage(lastUserMessage.content);
         }
@@ -183,7 +180,10 @@ const AIChat = () => {
             <div className={styles.configPrompt}>
                 <Bot size={48} />
                 <h3>AI Assistant Not Configured</h3>
-                <p>Please configure your OpenAI API settings in the Settings panel to start using the AI assistant.</p>
+                <p>
+                    Please configure your OpenAI API settings in the Settings
+                    panel to start using the AI assistant.
+                </p>
             </div>
         );
     }
@@ -192,7 +192,10 @@ const AIChat = () => {
         <div className={styles.chatContainer}>
             {/* Conversation Selector */}
             <div className={styles.conversationHeader}>
-                <div className={styles.conversationSelector} ref={conversationSelectorRef}>
+                <div
+                    className={styles.conversationSelector}
+                    ref={conversationSelectorRef}
+                >
                     <button
                         onClick={() => setShowConversations(!showConversations)}
                         className={styles.conversationButton}
@@ -200,7 +203,10 @@ const AIChat = () => {
                         <span className={styles.conversationTitle}>
                             {currentConversation?.title || 'New Conversation'}
                         </span>
-                        <ChevronDown size={16} className={showConversations ? styles.rotated : ''} />
+                        <ChevronDown
+                            size={16}
+                            className={showConversations ? styles.rotated : ''}
+                        />
                     </button>
 
                     {showConversations && (
@@ -213,18 +219,31 @@ const AIChat = () => {
                                             switchConversation(conv.id);
                                             setShowConversations(false);
                                         }}
-                                        className={`${styles.conversationItem} ${conv.id === currentConversationId ? styles.active : ''
-                                            }`}
+                                        className={`${styles.conversationItem} ${
+                                            conv.id === currentConversationId
+                                                ? styles.active
+                                                : ''
+                                        }`}
                                     >
-                                        <span className={styles.conversationItemTitle}>
+                                        <span
+                                            className={
+                                                styles.conversationItemTitle
+                                            }
+                                        >
                                             {conv.title}
                                         </span>
-                                        <span className={styles.conversationItemDate}>
-                                            {new Date(conv.updatedAt).toLocaleDateString()}
+                                        <span
+                                            className={
+                                                styles.conversationItemDate
+                                            }
+                                        >
+                                            {new Date(
+                                                conv.updatedAt
+                                            ).toLocaleDateString()}
                                         </span>
                                         {conversations.length > 1 && (
                                             <button
-                                                onClick={(e) => {
+                                                onClick={e => {
                                                     e.stopPropagation();
                                                     deleteConversation(conv.id);
                                                 }}
@@ -248,9 +267,10 @@ const AIChat = () => {
                     }}
                     className={styles.newConversationButton}
                     title={
-                        currentConversation && isConversationEmpty(currentConversation)
-                            ? "Current conversation is ready for use"
-                            : "Start new conversation"
+                        currentConversation &&
+                        isConversationEmpty(currentConversation)
+                            ? 'Current conversation is ready for use'
+                            : 'Start new conversation'
                     }
                 >
                     <div className={styles.plusIcon}>
@@ -262,18 +282,25 @@ const AIChat = () => {
             {/* Messages */}
             <div className={styles.messagesContainer}>
                 <div className={styles.messages}>
-                    {currentConversation?.messages.map((message) => (
+                    {currentConversation?.messages.map(message => (
                         <div
                             key={message.id}
                             className={`${styles.message} ${styles[message.type]}`}
                         >
                             <div className={styles.messageIcon}>
-                                {message.type === 'ai' ? <Bot size={16} /> : <User size={16} />}
+                                {message.type === 'ai' ? (
+                                    <Bot size={16} />
+                                ) : (
+                                    <User size={16} />
+                                )}
                             </div>
                             <div className={styles.messageContent}>
                                 {message.content}
                                 {message.isStreaming && (
-                                    <Loader2 size={14} className={styles.streamingIndicator} />
+                                    <Loader2
+                                        size={14}
+                                        className={styles.streamingIndicator}
+                                    />
                                 )}
                             </div>
                         </div>
@@ -287,7 +314,10 @@ const AIChat = () => {
                 <div className={styles.errorContainer}>
                     <AlertCircle size={16} />
                     <span>{error}</span>
-                    <button onClick={handleRetry} className={styles.retryButton}>
+                    <button
+                        onClick={handleRetry}
+                        className={styles.retryButton}
+                    >
                         <RefreshCw size={14} />
                         Retry
                     </button>
@@ -300,7 +330,7 @@ const AIChat = () => {
                     <textarea
                         ref={textareaRef}
                         value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
+                        onChange={e => setInputMessage(e.target.value)}
                         onKeyPress={handleKeyPress}
                         placeholder="Ask me anything about HTML..."
                         className={styles.messageInput}

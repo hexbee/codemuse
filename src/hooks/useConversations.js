@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
+const generateId = () =>
+    Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 export const useConversations = () => {
     const [conversations, setConversations] = useState([]);
@@ -10,18 +11,26 @@ export const useConversations = () => {
     useEffect(() => {
         try {
             const savedConversations = localStorage.getItem('ai-conversations');
-            const savedCurrentId = localStorage.getItem('current-conversation-id');
+            const savedCurrentId = localStorage.getItem(
+                'current-conversation-id'
+            );
 
             if (savedConversations) {
                 const parsedConversations = JSON.parse(savedConversations);
                 setConversations(parsedConversations);
 
-                if (savedCurrentId && parsedConversations.find(c => c.id === savedCurrentId)) {
+                if (
+                    savedCurrentId &&
+                    parsedConversations.find(c => c.id === savedCurrentId)
+                ) {
                     setCurrentConversationId(savedCurrentId);
                 } else if (parsedConversations.length > 0) {
                     const firstConvId = parsedConversations[0].id;
                     setCurrentConversationId(firstConvId);
-                    localStorage.setItem('current-conversation-id', firstConvId);
+                    localStorage.setItem(
+                        'current-conversation-id',
+                        firstConvId
+                    );
                 }
             } else {
                 // Create initial conversation
@@ -31,12 +40,15 @@ export const useConversations = () => {
             console.error('Failed to load conversations:', error);
             createNewConversation();
         }
-    }, []);
+    }, [createNewConversation]);
 
     // Save conversations to localStorage
     const saveConversations = (newConversations, newCurrentId = null) => {
         try {
-            localStorage.setItem('ai-conversations', JSON.stringify(newConversations));
+            localStorage.setItem(
+                'ai-conversations',
+                JSON.stringify(newConversations)
+            );
             if (newCurrentId !== null) {
                 localStorage.setItem('current-conversation-id', newCurrentId);
             }
@@ -46,21 +58,23 @@ export const useConversations = () => {
     };
 
     // Check if conversation is effectively empty (only has initial AI message)
-    const isConversationEmpty = (conversation) => {
+    const isConversationEmpty = useCallback(conversation => {
         if (!conversation || !conversation.messages) return true;
 
         // Consider empty if only has 1 message and it's the initial AI greeting
         if (conversation.messages.length === 1) {
             const message = conversation.messages[0];
-            return message.type === 'ai' &&
-                message.content.includes('Hello! I\'m your AI assistant');
+            return (
+                message.type === 'ai' &&
+                message.content.includes("Hello! I'm your AI assistant")
+            );
         }
 
         return conversation.messages.length === 0;
-    };
+    }, []);
 
     // Smart create new conversation - reuse empty conversation if available
-    const createNewConversation = () => {
+    const createNewConversation = useCallback(() => {
         const currentConv = getCurrentConversation();
 
         // If current conversation is empty, just reuse it
@@ -71,14 +85,17 @@ export const useConversations = () => {
         const newConversation = {
             id: generateId(),
             title: 'New Conversation',
-            messages: [{
-                id: generateId(),
-                type: 'ai',
-                content: 'Hello! I\'m your AI assistant. I can help you with HTML editing, formatting, and content generation. How can I assist you today?',
-                timestamp: new Date().toISOString()
-            }],
+            messages: [
+                {
+                    id: generateId(),
+                    type: 'ai',
+                    content:
+                        "Hello! I'm your AI assistant. I can help you with HTML editing, formatting, and content generation. How can I assist you today?",
+                    timestamp: new Date().toISOString(),
+                },
+            ],
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
         };
 
         const newConversations = [newConversation, ...conversations];
@@ -87,15 +104,15 @@ export const useConversations = () => {
         saveConversations(newConversations, newConversation.id);
 
         return newConversation.id;
-    };
+    }, [conversations, getCurrentConversation, isConversationEmpty]);
 
     // Get current conversation
-    const getCurrentConversation = () => {
+    const getCurrentConversation = useCallback(() => {
         return conversations.find(c => c.id === currentConversationId) || null;
-    };
+    }, [conversations, currentConversationId]);
 
     // Add message to current conversation
-    const addMessage = (message) => {
+    const addMessage = message => {
         if (!currentConversationId) {
             console.error('No current conversation ID');
             return;
@@ -104,7 +121,7 @@ export const useConversations = () => {
         const newMessage = {
             id: generateId(),
             ...message,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         };
 
         setConversations(prevConversations => {
@@ -113,12 +130,17 @@ export const useConversations = () => {
                     const updatedConv = {
                         ...conv,
                         messages: [...conv.messages, newMessage],
-                        updatedAt: new Date().toISOString()
+                        updatedAt: new Date().toISOString(),
                     };
 
                     // Auto-generate title from first user message
-                    if (conv.title === 'New Conversation' && message.type === 'user') {
-                        updatedConv.title = message.content.slice(0, 50) + (message.content.length > 50 ? '...' : '');
+                    if (
+                        conv.title === 'New Conversation' &&
+                        message.type === 'user'
+                    ) {
+                        updatedConv.title =
+                            message.content.slice(0, 50) +
+                            (message.content.length > 50 ? '...' : '');
                     }
 
                     return updatedConv;
@@ -145,7 +167,7 @@ export const useConversations = () => {
                         messages: conv.messages.map(msg =>
                             msg.id === messageId ? { ...msg, ...updates } : msg
                         ),
-                        updatedAt: new Date().toISOString()
+                        updatedAt: new Date().toISOString(),
                     };
                 }
                 return conv;
@@ -157,7 +179,7 @@ export const useConversations = () => {
     };
 
     // Switch to different conversation
-    const switchConversation = (conversationId) => {
+    const switchConversation = conversationId => {
         if (conversations.find(c => c.id === conversationId)) {
             setCurrentConversationId(conversationId);
             localStorage.setItem('current-conversation-id', conversationId);
@@ -165,12 +187,17 @@ export const useConversations = () => {
     };
 
     // Delete conversation
-    const deleteConversation = (conversationId) => {
-        const updatedConversations = conversations.filter(c => c.id !== conversationId);
+    const deleteConversation = conversationId => {
+        const updatedConversations = conversations.filter(
+            c => c.id !== conversationId
+        );
         setConversations(updatedConversations);
 
         if (currentConversationId === conversationId) {
-            const newCurrentId = updatedConversations.length > 0 ? updatedConversations[0].id : null;
+            const newCurrentId =
+                updatedConversations.length > 0
+                    ? updatedConversations[0].id
+                    : null;
             setCurrentConversationId(newCurrentId);
             if (newCurrentId) {
                 localStorage.setItem('current-conversation-id', newCurrentId);
@@ -197,7 +224,8 @@ export const useConversations = () => {
     };
 
     // Get current conversation as a computed value
-    const currentConversation = conversations.find(c => c.id === currentConversationId) || null;
+    const currentConversation =
+        conversations.find(c => c.id === currentConversationId) || null;
 
     return {
         conversations,
@@ -210,6 +238,6 @@ export const useConversations = () => {
         switchConversation,
         deleteConversation,
         clearAllConversations,
-        isConversationEmpty
+        isConversationEmpty,
     };
 };

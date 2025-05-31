@@ -5,8 +5,8 @@ import MainContent from './components/MainContent/MainContent';
 import styles from './App.module.css';
 
 function App() {
-  const { theme, toggleTheme } = useTheme();
-  const [htmlCode, setHtmlCode] = useState(`<!DOCTYPE html>
+    const { theme, toggleTheme } = useTheme();
+    const [htmlCode, setHtmlCode] = useState(`<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -63,24 +63,26 @@ function App() {
 </body>
 </html>`);
 
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  return (
-    <div className={styles.app}>
-      <Sidebar
-        isCollapsed={isSidebarCollapsed}
-        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
-      <MainContent
-        htmlCode={htmlCode}
-        onHtmlChange={setHtmlCode}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
-    </div>
-  );
+    return (
+        <div className={styles.app}>
+            <Sidebar
+                isCollapsed={isSidebarCollapsed}
+                onToggleCollapse={() =>
+                    setIsSidebarCollapsed(!isSidebarCollapsed)
+                }
+                theme={theme}
+                onToggleTheme={toggleTheme}
+            />
+            <MainContent
+                htmlCode={htmlCode}
+                onHtmlChange={setHtmlCode}
+                theme={theme}
+                onToggleTheme={toggleTheme}
+            />
+        </div>
+    );
 }
 
 export default App;

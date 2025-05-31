@@ -5,13 +5,13 @@ const DEFAULT_CONFIG = {
     baseUrl: 'https://api.openai.com/v1',
     model: 'gpt-4o-mini',
     maxTokens: 2000,
-    temperature: 0.7
+    temperature: 0.7,
 };
 
 const SUPPORTED_MODELS = [
     { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
     { value: 'gpt-4o', label: 'GPT-4o' },
-    { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' }
+    { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
 ];
 
 export const useAIConfig = () => {
@@ -33,7 +33,7 @@ export const useAIConfig = () => {
     }, []);
 
     // Save config to localStorage
-    const saveConfig = (newConfig) => {
+    const saveConfig = newConfig => {
         try {
             const updatedConfig = { ...config, ...newConfig };
             setConfig(updatedConfig);
@@ -59,7 +59,10 @@ export const useAIConfig = () => {
             errors.apiKey = 'API Key is required';
         }
 
-        if (!configToValidate.baseUrl || configToValidate.baseUrl.trim() === '') {
+        if (
+            !configToValidate.baseUrl ||
+            configToValidate.baseUrl.trim() === ''
+        ) {
             errors.baseUrl = 'Base URL is required';
         } else {
             try {
@@ -75,7 +78,7 @@ export const useAIConfig = () => {
 
         return {
             isValid: Object.keys(errors).length === 0,
-            errors
+            errors,
         };
     };
 
@@ -93,6 +96,6 @@ export const useAIConfig = () => {
         updateConfig,
         validateConfig,
         resetConfig,
-        supportedModels: SUPPORTED_MODELS
+        supportedModels: SUPPORTED_MODELS,
     };
 };

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import styles from './CodeEditor.module.css';
 
@@ -7,7 +7,7 @@ const CodeEditor = ({ value, onChange, theme }) => {
 
     const handleEditorDidMount = (editor, monaco) => {
         editorRef.current = editor;
-        
+
         // Configure HTML language features
         monaco.languages.html.htmlDefaults.setOptions({
             format: {
@@ -22,18 +22,18 @@ const CodeEditor = ({ value, onChange, theme }) => {
                 indentHandlebars: false,
                 endWithNewline: false,
                 extraLiners: 'head, body, /html',
-                wrapAttributes: 'auto'
+                wrapAttributes: 'auto',
             },
             suggest: {
                 html5: true,
                 angular1: false,
-                ionic: false
-            }
+                ionic: false,
+            },
         });
 
         // Add custom HTML snippets
         monaco.languages.registerCompletionItemProvider('html', {
-            provideCompletionItems: (model, position) => {
+            provideCompletionItems: () => {
                 const suggestions = [
                     {
                         label: 'html5',
@@ -49,28 +49,36 @@ const CodeEditor = ({ value, onChange, theme }) => {
                             '<body>',
                             '    ${2}',
                             '</body>',
-                            '</html>'
+                            '</html>',
                         ].join('\n'),
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        documentation: 'HTML5 boilerplate'
+                        insertTextRules:
+                            monaco.languages.CompletionItemInsertTextRule
+                                .InsertAsSnippet,
+                        documentation: 'HTML5 boilerplate',
                     },
                     {
                         label: 'div',
                         kind: monaco.languages.CompletionItemKind.Snippet,
-                        insertText: '<div class="${1:class-name}">\n    ${2}\n</div>',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        documentation: 'Div with class'
+                        insertText:
+                            '<div class="${1:class-name}">\n    ${2}\n</div>',
+                        insertTextRules:
+                            monaco.languages.CompletionItemInsertTextRule
+                                .InsertAsSnippet,
+                        documentation: 'Div with class',
                     },
                     {
                         label: 'button',
                         kind: monaco.languages.CompletionItemKind.Snippet,
-                        insertText: '<button type="${1:button}" onclick="${2:function()}">${3:Button Text}</button>',
-                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                        documentation: 'Button element'
-                    }
+                        insertText:
+                            '<button type="${1:button}" onclick="${2:function()}">${3:Button Text}</button>',
+                        insertTextRules:
+                            monaco.languages.CompletionItemInsertTextRule
+                                .InsertAsSnippet,
+                        documentation: 'Button element',
+                    },
                 ];
                 return { suggestions };
-            }
+            },
         });
     };
 
@@ -100,13 +108,13 @@ const CodeEditor = ({ value, onChange, theme }) => {
         quickSuggestions: {
             other: true,
             comments: false,
-            strings: true
+            strings: true,
         },
         parameterHints: {
-            enabled: true
+            enabled: true,
         },
         hover: {
-            enabled: true
+            enabled: true,
         },
         contextmenu: true,
         mouseWheelZoom: true,
@@ -120,8 +128,8 @@ const CodeEditor = ({ value, onChange, theme }) => {
             verticalHasArrows: false,
             horizontalHasArrows: false,
             verticalScrollbarSize: 8,
-            horizontalScrollbarSize: 8
-        }
+            horizontalScrollbarSize: 8,
+        },
     };
 
     return (
