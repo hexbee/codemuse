@@ -59,7 +59,26 @@ function App() {
         </div>
 
         <p>CodeMuse provides a powerful HTML editor with syntax highlighting, live preview, and AI assistance to help you create amazing web content.</p>
+
+        <button onclick="alert('Hello from CodeMuse!')" style="background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 10px 5px;">Click me!</button>
+        <button onclick="changeColor()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 10px 5px;">Change Color</button>
     </div>
+
+    <script>
+        function changeColor() {
+            const container = document.querySelector('.container');
+            const colors = ['white', '#e3f2fd', '#f3e5f5', '#e8f5e8', '#fff3e0'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            container.style.backgroundColor = randomColor;
+        }
+
+        console.log('CodeMuse loaded successfully!');
+
+        // Test script execution
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, JavaScript is working!');
+        });
+    </script>
 </body>
 </html>`);
 

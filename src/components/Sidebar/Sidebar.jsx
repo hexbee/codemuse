@@ -24,7 +24,7 @@ const Sidebar = ({
                     {!isCollapsed && (
                         <>
                             <MessageCircle size={20} />
-                            <span>AI Assistant</span>
+                            <span>CodeMuse</span>
                         </>
                     )}
                     <div className={styles.headerActions}>

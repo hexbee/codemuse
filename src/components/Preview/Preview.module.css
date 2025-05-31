@@ -50,39 +50,58 @@
 }
 
 .previewFrame {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     border: none;
     background-color: white;
     display: block;
+    transition: opacity 0.3s ease;
 }
 
-/* Loading state */
-.previewContent::before {
-    content: '';
+.previewFrame.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+.previewFrame.hidden {
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Loading overlay */
+.loadingOverlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.4),
-        transparent
-    );
-    transform: translateX(-100%);
-    animation: loading 1.5s infinite;
-    pointer-events: none;
-    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    backdrop-filter: blur(2px);
 }
 
-@keyframes loading {
+.loadingSpinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-top: 2px solid var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
     0% {
-        transform: translateX(-100%);
+        transform: rotate(0deg);
     }
     100% {
-        transform: translateX(100%);
+        transform: rotate(360deg);
     }
 }
 
