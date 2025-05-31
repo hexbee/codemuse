@@ -8,7 +8,7 @@ import {
     Loader2,
     AlertCircle,
     RefreshCw,
-    Edit3
+    Plus
 } from 'lucide-react';
 import { useAIConfig } from '../../hooks/useAIConfig';
 import { useConversations } from '../../hooks/useConversations';
@@ -231,7 +231,9 @@ const AIChat = () => {
                     className={styles.newConversationButton}
                     title="New Conversation"
                 >
-                    <Edit3 size={24} />
+                    <div className={styles.plusIcon}>
+                        <Plus size={16} />
+                    </div>
                 </button>
             </div>
 

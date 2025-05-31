@@ -94,8 +94,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     background-color: var(--bg-primary);
@@ -103,12 +103,40 @@
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
+    font-size: 0.875rem;
+    padding: 0;
 }
 
 .newConversationButton:hover {
-    background-color: var(--accent-primary);
-    color: white;
-    border-color: var(--accent-primary);
+    background-color: var(--bg-secondary);
+    border-color: var(--border-hover);
+}
+
+.newConversationButton:active {
+    transform: scale(0.95);
+    background-color: var(--bg-tertiary);
+}
+
+/* Plus Icon */
+.plusIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    color: var(--text-primary);
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.newConversationButton:hover .plusIcon {
+    color: var(--accent-primary);
+    transform: scale(1.1);
+}
+
+.newConversationButton:active .plusIcon {
+    transform: scale(0.9);
 }
 
 /* New Conversation Icon Composition */
