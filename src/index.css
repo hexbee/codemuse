@@ -83,7 +83,8 @@ body {
     color: var(--text-primary);
     line-height: 1.5;
     height: 100vh;
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 /* Scrollbar Styles */

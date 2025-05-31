@@ -4,6 +4,7 @@
     flex-direction: column;
     background-color: var(--bg-primary);
     position: relative;
+    overflow: hidden;
 }
 
 .header {
@@ -11,6 +12,10 @@
     flex-direction: column;
     background-color: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    flex-shrink: 0;
 }
 
 .topSection {
@@ -107,6 +112,8 @@
     flex: 1;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Mobile Responsive */

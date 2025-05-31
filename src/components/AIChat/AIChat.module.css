@@ -3,6 +3,7 @@
     flex-direction: column;
     height: 100%;
     background-color: var(--sidebar-bg);
+    overflow: hidden;
 }
 
 .configPrompt {
@@ -236,6 +237,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
 .messages {
