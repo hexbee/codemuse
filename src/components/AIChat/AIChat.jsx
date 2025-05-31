@@ -38,7 +38,8 @@ const AIChat = () => {
         updateMessage,
         switchConversation,
         deleteConversation,
-        clearAllConversations
+        clearAllConversations,
+        isConversationEmpty
     } = useConversations();
 
     // Initialize OpenAI service when config changes
@@ -229,7 +230,11 @@ const AIChat = () => {
                         setShowConversations(false);
                     }}
                     className={styles.newConversationButton}
-                    title="New Conversation"
+                    title={
+                        currentConversation && isConversationEmpty(currentConversation)
+                            ? "Current conversation is ready for use"
+                            : "Start new conversation"
+                    }
                 >
                     <div className={styles.plusIcon}>
                         <Plus size={16} />

@@ -45,8 +45,29 @@ export const useConversations = () => {
         }
     };
 
-    // Create new conversation
+    // Check if conversation is effectively empty (only has initial AI message)
+    const isConversationEmpty = (conversation) => {
+        if (!conversation || !conversation.messages) return true;
+
+        // Consider empty if only has 1 message and it's the initial AI greeting
+        if (conversation.messages.length === 1) {
+            const message = conversation.messages[0];
+            return message.type === 'ai' &&
+                message.content.includes('Hello! I\'m your AI assistant');
+        }
+
+        return conversation.messages.length === 0;
+    };
+
+    // Smart create new conversation - reuse empty conversation if available
     const createNewConversation = () => {
+        const currentConv = getCurrentConversation();
+
+        // If current conversation is empty, just reuse it
+        if (currentConv && isConversationEmpty(currentConv)) {
+            return currentConv.id;
+        }
+
         const newConversation = {
             id: generateId(),
             title: 'New Conversation',
@@ -188,6 +209,7 @@ export const useConversations = () => {
         updateMessage,
         switchConversation,
         deleteConversation,
-        clearAllConversations
+        clearAllConversations,
+        isConversationEmpty
     };
 };
