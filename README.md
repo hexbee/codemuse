@@ -1,5 +1,7 @@
 # CodeMuse - HTML Editor with AI Assistant
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/hexbee/codemuse?utm_source=oss&utm_medium=github&utm_campaign=hexbee%2Fcodemuse&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 一个现代化的HTML编辑器，具有实时预览功能和AI对话增强编辑体验。
 
 ## ✨ 功能特性
